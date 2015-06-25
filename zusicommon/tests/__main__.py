@@ -31,9 +31,35 @@ class TestZusiCommon(unittest.TestCase):
         self.existing_paths.append(os.path.join(self.test_file_base_dir, "ICE.ls3"))
         self.assertResolveFilePath(os.path.join(self.test_file_base_dir, "ICE.ls3"), "ICE.ls3")
 
+    def test_resolve_path_same_dir_priority(self):
+        self.existing_paths.append(os.path.join(self.test_file_base_dir, "ICE.ls3"))
+        self.existing_paths.append(os.path.join(ZUSI_DATAPATH, "ICE.ls3"))
+        self.assertResolveFilePath(os.path.join(ZUSI_DATAPATH, "ICE.ls3"), "ICE.ls3")
+
     def test_resolve_path_relative_to_data_path(self):
         self.existing_paths.append(os.path.join(self.test_file_base_dir, "ICE.ls3"))
         self.assertResolveFilePath(os.path.join(self.test_file_base_dir, "ICE.ls3"), r"RollingStock\ICE\ICE.ls3")
+
+    def test_resolve_nonexisting_path_relative_to_data_path(self):
+        self.assertResolveFilePath(os.path.join(self.test_file_base_dir, "ICE.ls3"), r"RollingStock\ICE\ICE.ls3")
+
+    def test_resolve_nonexisting_path_without_directory(self):
+        self.assertResolveFilePath(os.path.join(ZUSI_DATAPATH, "ICE.ls3"), r"ICE.ls3")
+
+    def test_resolve_absolute_path(self):
+        self.existing_paths.append(os.path.join(self.test_file_base_dir, "ICE.ls3"))
+        self.assertResolveFilePath(os.path.join(self.test_file_base_dir, "ICE.ls3"),
+            os.path.join(self.test_file_base_dir, "ICE.ls3"))
+
+    def test_resolve_absolute_path_nonexisting(self):
+        self.assertResolveFilePath(os.path.join(self.test_file_base_dir, "ICE.ls3"),
+            os.path.join(self.test_file_base_dir, "ICE.ls3"))
+
+    def test_dont_resolve_relative_to_current_dir(self):
+        self.existing_paths.append(os.path.join(self.test_file_base_dir, "3D-Daten", "ICE.ls3"))
+        self.assertResolveFilePath(os.path.join(ZUSI_DATAPATH, "3D-Daten", "ICE.ls3"),
+            r'3D-Daten\ICE.ls3')
+
 
 if __name__ == '__main__':
     unittest.main()

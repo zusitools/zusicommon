@@ -18,6 +18,7 @@
 from math import sqrt, acos
 import array
 import os
+import ntpath
 
 try:
     from . import zusiconfig
@@ -292,16 +293,15 @@ def get_default_author_info():
 # 2) interpreting the path as relative to the LS3 file's path
 # 3) interpreting the path as relative to the Zusi base path
 def resolve_file_path(file_path, current_dir, datapath):
-    # Normalize path separator
-    for ch in ['\\',  '/']:
-        file_path = file_path.replace(ch, os.sep)
-
-    if os.path.exists(file_path):
+    if ntpath.isabs(file_path):
         return file_path
 
-    relpath_ls3 = os.path.realpath(current_dir) + os.sep + file_path
-    if os.path.exists(relpath_ls3):
-        return relpath_ls3
+    file_path = file_path.replace('\\', os.sep)
 
-    relpath_base = os.path.realpath(datapath) + os.sep + file_path
-    return relpath_base
+    relpath_base = os.path.join(os.path.realpath(datapath), file_path)
+    # paths that contain directories are always relative to the data path
+    if os.path.exists(relpath_base) or os.sep in file_path:
+        return relpath_base
+
+    relpath_ls3 = os.path.join(os.path.realpath(current_dir),file_path)
+    return relpath_ls3 if os.path.exists(relpath_ls3) else relpath_base
