@@ -21,7 +21,7 @@ import os
 import ntpath
 
 try:
-    from . import zusiconfig
+    from ... import zusiconfig
 except:
     pass
 
