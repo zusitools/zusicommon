@@ -278,7 +278,7 @@ def get_default_author_info():
                     default_author['name'] = registry_value["AutorName"]
                 if "AutorID" in registry_value:
                     try:
-                        default_author['id'] = int(registry_value["AutorId"])
+                        default_author['id'] = int(registry_value["AutorID"])
                     except ValueError:
                         pass
                 if "AutorEMail" in registry_value:
