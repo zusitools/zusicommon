@@ -182,7 +182,7 @@ def read_registry_strings(keys, valuenames):
                     # The loop will be ended by a WindowsError being thrown when there
                     # are no more key-value pairs
                     value = winreg.EnumValue(key, index)
-                    if value[0] in valuenames and len(value[1]):
+                    if value[0] in valuenames and value[1] != "":
                         result[value[0]] = value[1]
                     index += 1
             except WindowsError:
