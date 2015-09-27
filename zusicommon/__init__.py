@@ -28,13 +28,15 @@ except:
 # Forces a value into a range
 forcerange = lambda x, minval, maxval : min(max(x, minval), maxval)
 
+infinity = float("inf")
+
 # Calculates the angle between two 3-dimensional vertices
 # angle = arccos(u X v / (|u| * |v|))
 # where X denotes the scalar product
 def vertexangle_3(v1, v2):
     denominator = vertexlength_3(v1[0], v1[1], v1[2]) * vertexlength_3(v2[0], v2[1], v2[2])
     if denominator == 0.0:
-        return 0
+        return infinity
     else:
         return acos(forcerange((v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]) / denominator, -1.0, 1.0))
 
