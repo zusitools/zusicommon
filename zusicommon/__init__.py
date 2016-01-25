@@ -295,6 +295,7 @@ def get_default_author_info():
 # 2) interpreting the path as relative to the LS3 file's path
 # 3) interpreting the path as relative to the Zusi base path
 def resolve_file_path(file_path, current_dir, datapath):
+    file_path = file_path.lstrip('\\')
     if ntpath.isabs(file_path):
         return file_path
 

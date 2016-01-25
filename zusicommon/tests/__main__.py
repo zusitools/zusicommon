@@ -40,6 +40,10 @@ class TestZusiCommon(unittest.TestCase):
         self.existing_paths.append(os.path.join(self.test_file_base_dir, "ICE.ls3"))
         self.assertResolveFilePath(os.path.join(self.test_file_base_dir, "ICE.ls3"), r"RollingStock\ICE\ICE.ls3")
 
+    def test_resolve_path_relative_to_data_path_with_preceding_backslash(self):
+        self.existing_paths.append(os.path.join(self.test_file_base_dir, "ICE.ls3"))
+        self.assertResolveFilePath(os.path.join(self.test_file_base_dir, "ICE.ls3"), r"\RollingStock\ICE\ICE.ls3")
+
     def test_resolve_nonexisting_path_relative_to_data_path(self):
         self.assertResolveFilePath(os.path.join(self.test_file_base_dir, "ICE.ls3"), r"RollingStock\ICE\ICE.ls3")
 
