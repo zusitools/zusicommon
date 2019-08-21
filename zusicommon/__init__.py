@@ -210,7 +210,7 @@ def get_zusi_data_path():
     except:
         basepath = ""
 
-    if basepath is None or basepath == "":
+    if not basepath:
         # Read basepath from registry.
         try:
             import winreg
@@ -219,16 +219,47 @@ def get_zusi_data_path():
                 (winreg.HKEY_LOCAL_MACHINE, "Software\\Wow6432Node\\Zusi3"),
                 (winreg.HKEY_CURRENT_USER, "Software\\Zusi3"),
                 (winreg.HKEY_CURRENT_USER, "Software\\Wow6432Node\\Zusi3"),
-            ], set(["DatenVerzeichnis", "DatenDir", "DatenVerzeichnisDemo", "DatenDirDemo"]))
+            ], set(["DatenVerzeichnis", "DatenVerzeichnisSteam", "DatenVerzeichnisDemo", "DatenDir", "DatenDirDemo"]))
             if registry_values is not None:
                 if "DatenVerzeichnis" in registry_values:
                     return registry_values["DatenVerzeichnis"]
+                elif "DatenVerzeichnisSteam" in registry_values:
+                    return registry_values["DatenVerzeichnisSteam"]
                 elif "DatenDir" in registry_values:
                     return registry_values["DatenDir"]
                 elif "DatenVerzeichnisDemo" in registry_values:
                     return registry_values["DatenVerzeichnisDemo"]
                 elif "DatenDirDemo" in registry_values:
                     return registry_values["DatenDirDemo"]
+        except ImportError:
+            pass
+
+    return basepath
+
+# Retrieve the path name of the Zusi official data directory
+def get_zusi_data_path_official():
+    # Base path for path names relative to the Zusi official data directory.
+    # Change default value to your liking. It has to contain a trailing (back)slash
+    try:
+        basepath = zusiconfig.datapath_official
+    except:
+        basepath = ""
+
+    if not basepath:
+        # Read basepath from registry.
+        try:
+            import winreg
+            registry_values = read_registry_strings([
+                (winreg.HKEY_LOCAL_MACHINE, "Software\\Zusi3"),
+                (winreg.HKEY_LOCAL_MACHINE, "Software\\Wow6432Node\\Zusi3"),
+                (winreg.HKEY_CURRENT_USER, "Software\\Zusi3"),
+                (winreg.HKEY_CURRENT_USER, "Software\\Wow6432Node\\Zusi3"),
+            ], set(["DatenVerzeichnisOffiziell", "DatenVerzeichnisOffiziellSteam", ]))
+            if registry_values is not None:
+                if "DatenVerzeichnisOffiziell" in registry_values:
+                    return registry_values["DatenVerzeichnisOffiziell"]
+                elif "DatenVerzeichnisOffiziellSteam" in registry_values:
+                    return registry_values["DatenVerzeichnisOffiziellSteam"]
         except ImportError:
             pass
 
@@ -241,7 +272,7 @@ def get_zusi2_data_path():
     except:
         basepath = ""
 
-    if basepath is None or basepath == "":
+    if not basepath:
         # Read basepath from registry.
         try:
             import winreg
@@ -290,21 +321,26 @@ def get_default_author_info():
 
     return default_author
 
-# Tries to locate a file by its path:
-# 1) interpreting the path as an absolute path
-# 2) interpreting the path as relative to the LS3 file's path
-# 3) interpreting the path as relative to the Zusi base path
-def resolve_file_path(file_path, current_dir, datapath):
+# Tries to locate a file by its path. Based on the path it will:
+# 1) interpret the path as an absolute path
+# 2) interpret the path as relative to current_dir
+# 3) interpret the path as relative to the Zusi user data path
+# 4) interpret the path as relative to the Zusi official data path
+def resolve_file_path(file_path, current_dir, datapath, datapath_official = None):
     file_path = file_path.lstrip('\\')
     if ntpath.isabs(file_path):
         return file_path
 
     file_path = file_path.replace('\\', os.sep)
 
-    relpath_base = os.path.join(os.path.realpath(datapath), file_path)
-    # paths that contain directories are always relative to the data path
-    if os.path.exists(relpath_base) or os.sep in file_path:
-        return relpath_base
+    if os.sep not in file_path:
+        relpath_ls3 = os.path.join(os.path.realpath(current_dir),file_path)
+        if os.path.exists(relpath_ls3):
+            return relpath_ls3
 
-    relpath_ls3 = os.path.join(os.path.realpath(current_dir),file_path)
-    return relpath_ls3 if os.path.exists(relpath_ls3) else relpath_base
+    # Paths that contain directory separators are always relative to the data path
+    relpath_base = os.path.join(os.path.realpath(datapath), file_path)
+    if datapath_official is not None and not os.path.exists(relpath_base):
+        relpath_base = os.path.join(os.path.realpath(datapath_official), file_path)
+    return relpath_base
+
