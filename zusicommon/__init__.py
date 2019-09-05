@@ -263,7 +263,10 @@ def get_zusi_data_path_official():
         except ImportError:
             pass
 
-    return basepath
+    if not basepath:
+        return get_zusi_data_path()
+    else:
+        return basepath
 
 # Retrieve the path name of the Zusi 2 data directory
 def get_zusi2_data_path():
