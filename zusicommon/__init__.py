@@ -173,7 +173,7 @@ def read_registry_strings(keys, valuenames):
         import winreg
         for (root, path) in keys:
             try:
-                key = winreg.OpenKey(root, path)
+                key = winreg.OpenKey(root, path, access=winreg.KEY_READ | winreg.KEY_WOW64_32KEY)
             except WindowsError:
                 continue
 
@@ -216,9 +216,7 @@ def get_zusi_data_path():
             import winreg
             registry_values = read_registry_strings([
                 (winreg.HKEY_LOCAL_MACHINE, "Software\\Zusi3"),
-                (winreg.HKEY_LOCAL_MACHINE, "Software\\Wow6432Node\\Zusi3"),
                 (winreg.HKEY_CURRENT_USER, "Software\\Zusi3"),
-                (winreg.HKEY_CURRENT_USER, "Software\\Wow6432Node\\Zusi3"),
             ], set(["DatenVerzeichnis", "DatenVerzeichnisSteam", "DatenVerzeichnisDemo", "DatenDir", "DatenDirDemo"]))
             if registry_values is not None:
                 if "DatenVerzeichnis" in registry_values:
@@ -251,9 +249,7 @@ def get_zusi_data_path_official():
             import winreg
             registry_values = read_registry_strings([
                 (winreg.HKEY_LOCAL_MACHINE, "Software\\Zusi3"),
-                (winreg.HKEY_LOCAL_MACHINE, "Software\\Wow6432Node\\Zusi3"),
                 (winreg.HKEY_CURRENT_USER, "Software\\Zusi3"),
-                (winreg.HKEY_CURRENT_USER, "Software\\Wow6432Node\\Zusi3"),
             ], set(["DatenVerzeichnisOffiziell", "DatenVerzeichnisOffiziellSteam", ]))
             if registry_values is not None:
                 if "DatenVerzeichnisOffiziell" in registry_values:
@@ -281,7 +277,6 @@ def get_zusi2_data_path():
             import winreg
             registry_value = read_registry_strings([
                 (winreg.HKEY_CURRENT_USER, "Software\\Zusi"),
-                (winreg.HKEY_CURRENT_USER, "Software\\Wow6432Node\\Zusi"),
             ], set(["ZusiDir"]))
             if registry_value is not None:
                 return registry_value["ZusiDir"]
@@ -304,9 +299,7 @@ def get_default_author_info():
             import winreg
             registry_value = read_registry_strings([
                 (winreg.HKEY_CURRENT_USER, "Software\\Zusi3\\Einstellungen"),
-                (winreg.HKEY_CURRENT_USER, "Software\\Wow6432Node\\Zusi3\\Einstellungen"),
                 (winreg.HKEY_CURRENT_USER, "Software\\Zusi3\\EinstellungenDemo"),
-                (winreg.HKEY_CURRENT_USER, "Software\\Wow6432Node\\Zusi3\\EinstellungenDemo"),
             ], set(["AutorName", "AutorID", "AutorEMail"]))
 
             if registry_value is not None:
