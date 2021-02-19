@@ -136,10 +136,10 @@ def optimize_mesh(vertexdata, maxCoordDelta, maxUVDelta, maxNormalAngle):
                     # Early-abort checks without having to compute actual vertex distances
                     # Explicitly write out two checks instead of using the abs() function
                     # for performance reasons.
-                    and vertex2[1] - vertex1[1] < maxCoordDelta and vertex1[1] - vertex2[1] < maxCoordDelta
-                    and vertex2[2] - vertex1[2] < maxCoordDelta and vertex1[2] - vertex2[2] < maxCoordDelta
-                    and vertex2[6] - vertex1[6] < maxUVDelta and vertex1[6] - vertex2[6] < maxUVDelta
-                    and vertex2[7] - vertex1[7] < maxUVDelta and vertex1[7] - vertex2[7] < maxUVDelta
+                    and vertex2[1] - vertex1[1] <= maxCoordDelta and vertex1[1] - vertex2[1] <= maxCoordDelta
+                    and vertex2[2] - vertex1[2] <= maxCoordDelta and vertex1[2] - vertex2[2] <= maxCoordDelta
+                    and vertex2[6] - vertex1[6] <= maxUVDelta and vertex1[6] - vertex2[6] <= maxUVDelta
+                    and vertex2[7] - vertex1[7] <= maxUVDelta and vertex1[7] - vertex2[7] <= maxUVDelta
                     # The actual tests
                     and vertexdist_squared_2(vertex1[6:8], vertex2[6:8]) <= maxUVDeltaSquared
                     and vertexdist_squared_3(vertex1[0:3], vertex2[0:3]) <= maxCoordDeltaSquared
