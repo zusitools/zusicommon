@@ -69,13 +69,13 @@ str2bool = lambda s : {"True" : True, "False" : False}[s]
 
 # Determines whether the given object is visible according to its variant settings
 # and the list of variants to export
-def is_object_visible(object, variantIDs):
-    if len(variantIDs) == 0 or object.zusi_variants_visibility_mode == "None":
+def is_object_visible(ob, variantIDs):
+    if (not variantIDs) or ob.zusi_variants_visibility_mode == "None":
         return True
 
     # The value to return when a visibility setting is found
-    visibility = str2bool(object.zusi_variants_visibility_mode)
-    visibility_settings = [vis.variant_id for vis in object.zusi_variants_visibility]
+    visibility = str2bool(ob.zusi_variants_visibility_mode)
+    visibility_settings = [vis.variant_id for vis in ob.zusi_variants_visibility]
     intersect = set(variantIDs).intersection(visibility_settings)
 
     return (len(intersect) == 0) != visibility
