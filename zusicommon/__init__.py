@@ -173,9 +173,12 @@ def read_registry_strings(keys, valuenames):
         import winreg
         for (root, path) in keys:
             try:
-                key = winreg.OpenKey(root, path, access=winreg.KEY_READ | winreg.KEY_WOW64_32KEY)
+                key = winreg.OpenKey(root, path, access=winreg.KEY_READ | winreg.KEY_WOW64_64KEY)
             except WindowsError:
-                continue
+                try:
+                    key = winreg.OpenKey(root, path, access=winreg.KEY_READ | winreg.KEY_WOW64_32KEY)
+                except WindowsError:
+                    continue
 
             # We have to enumerate all key-value pairs in the open key
             try:
